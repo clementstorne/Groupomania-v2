@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Groupomania - Le réseau social d'entreprise
 
-## Getting Started
+Groupomania est un réseau social interne d'entreprise conçu pour faciliter les interactions entre les employés dans un environnement informel. Cette plateforme offre plusieurs fonctionnalités clés pour favoriser la communication et la collaboration au sein de l'organisation.
 
-First, run the development server:
+## Fonctionnalités
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Page de connexion**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Permet aux utilisateurs de se connecter à leur compte existant ou de créer un nouveau compte en fournissant leur adresse e-mail et un mot de passe sécurisé.
+- La session de l'utilisateur persiste tant qu'il est connecté.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Page d'accueil**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Affiche une liste des publications créées par les utilisateurs, organisées de manière antéchronologique pour mettre en avant les publications les plus récentes.
 
-## Learn More
+3. **Création d'un post**
 
-To learn more about Next.js, take a look at the following resources:
+- Les utilisateurs peuvent créer des publications contenant du texte et des images.
+- Ils ont également la possibilité de modifier ou supprimer leurs propres publications.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Système de like et dislike**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Permet aux utilisateurs d'exprimer leur appréciation pour les publications en les likant.
+- Les utilisateurs peuvent également exprimer leur désapprobation en dislikant les publications.
+- Chaque utilisateur peut liker ou disliker un post une seule fois.
 
-## Deploy on Vercel
+5. **Rôle administrateur**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Un utilisateur administrateur possède des droits de modération étendus, notamment la possibilité de modifier ou supprimer toutes les publications sur le réseau social.
+- Les identifiants de l'administrateur seront communiqués pour faciliter la gestion de la plateforme.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Technologies Utilisées
+
+- **Frontend** : TypeScript, Next.js, Tailwind CSS
+- **Backend** : Next.js, Prisma, MySQL
+
+## Installation
+
+Pour installer et exécuter localement Learn@Home, suivez ces étapes :
+
+1. Clonez ce dépôt sur votre machine locale.
+2. Assurez-vous d'avoir Node.js et MySQL installés sur votre système.
+3. Exécutez `npm install` dans le répertoire racine pour installer les dépendances.
+4. Configurez les variables d'environnement nécessaires, telles que les clés d'API et les paramètres de connexion à la base de données.
+5. Exécutez `npm run dev` pour démarrer l'application en mode développement.
