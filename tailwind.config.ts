@@ -7,7 +7,6 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   prefix: "",
   theme: {
@@ -41,20 +40,19 @@ const config = {
         "12": "#4F3422",
       },
       gray: {
-        "1": "#FDFDFC",
-        "2": "#F9F9F8",
-        "3": "#F1F0EF",
-        "4": "#E9E8E6",
-        "5": "#E2E1DE",
-        "6": "#DAD9D6",
-        "7": "#CFCECA",
-        "8": "#BCBBB5",
-        "9": "#8D8D86",
-        "10": "#82827C",
-        "11": "#63635E",
-        "12": "#21201C",
+        "1": "#FCFCFD",
+        "2": "#F9F9FB",
+        "3": "#F0F0F3",
+        "4": "#E8E8EC",
+        "5": "#E0E1E6",
+        "6": "#D9D9E0",
+        "7": "#CDCED6",
+        "8": "#B9BBC6",
+        "9": "#8B8D98",
+        "10": "#80838D",
+        "11": "#60646C",
+        "12": "#1C2024",
       },
-      tertiary: "#4e5166",
       white: "#ffffff",
       black: "#000000",
     },
@@ -66,6 +64,12 @@ const config = {
       },
     },
     extend: {
+      spacing: {
+        "224": "56rem",
+      },
+      objectPosition: {
+        "1/2-3/4": "center 75%",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

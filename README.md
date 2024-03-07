@@ -1,6 +1,6 @@
-# Groupomania - Le réseau social d'entreprise
+# intraconnect - Le réseau social d'entreprise
 
-Groupomania est un réseau social interne d'entreprise conçu pour faciliter les interactions entre les employés dans un environnement informel. Cette plateforme offre plusieurs fonctionnalités clés pour favoriser la communication et la collaboration au sein de l'organisation.
+intraconnect est un réseau social interne d'entreprise conçu pour faciliter les interactions entre les employés dans un environnement informel. Cette plateforme offre plusieurs fonctionnalités clés pour favoriser la communication et la collaboration au sein de l'organisation.
 
 ## Fonctionnalités
 

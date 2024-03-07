@@ -15,7 +15,7 @@ type BurgerButtonProps = {
 const BurgerButton = ({ className, isOpen, onClick }: BurgerButtonProps) => {
   return (
     <Button
-      variant={"outline"}
+      variant={"default"}
       className={className}
       aria-label="Open Menu"
       onClick={onClick}
@@ -49,17 +49,19 @@ const links: Link[] = [
   },
 ];
 
-const NavbarLink = ({
-  href,
-  label,
-  icon,
-}: {
+type NavbarLinkProps = {
   href: string;
   label: string;
   icon: React.ReactNode;
-}) => {
+  className?: string;
+};
+
+const NavbarLink = ({ href, label, icon, className }: NavbarLinkProps) => {
   return (
-    <Link href={href} className="flex items-center hover:font-bold">
+    <Link
+      href={href}
+      className="flex items-center text-orange-9 hover:text-orange-11"
+    >
       <>{icon}</>
       <span className="ml-2">{label}</span>
     </Link>
@@ -96,14 +98,14 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 h-20 w-full px-2 flex justify-between items-center bg-orange-9 z-10",
+        "fixed top-0 h-20 w-full px-2 flex justify-between items-center bg-orange-2  z-10",
         "md:px-4"
       )}
     >
       <div className="w-full flex justify-between items-center">
         <Link href="/">
           <Image
-            src={"/groupomania.svg"}
+            src={"/logo.svg"}
             alt="Logo de Groupomania, le réseau social interne d'entreprise"
             width={249}
             height={40}
@@ -112,13 +114,13 @@ const Navbar = () => {
         </Link>
 
         <BurgerButton
-          className="mr-2 md:hidden"
+          className="mr-2 md:hidden text-orange-1"
           isOpen={isOpen}
           onClick={handleDrawer}
         />
 
         <div className="hidden md:block">
-          <nav className="flex items-center space-x-8">
+          <nav className="flex items-center space-x-8 ">
             {links.map((link, index) => (
               <NavbarLink
                 key={index}
@@ -133,11 +135,11 @@ const Navbar = () => {
 
       <nav
         className={cn(
-          "w-full fixed left-0 bg-orange-9 overflow-auto",
+          "w-full fixed top-20 left-0 bg-orange-2 overflow-auto",
           "flex flex-col justify-center items-center space-y-8 py-8",
           "transform ease-in-out transition-all duration-300",
-          isOpen && "top-20 translate-y-0",
-          !isOpen && "top-0 -translate-y-full"
+          isOpen && "translate-x-0",
+          !isOpen && "-translate-x-full"
         )}
       >
         {links.map((link, index) => (

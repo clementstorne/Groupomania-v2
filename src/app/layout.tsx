@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 
-const lato = Lato({ weight: "400", subsets: ["latin"] });
+const lato = Lato({ weight: ["300", "400", "700", "900"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Groupomania",
+  title: "intraconnect",
   description:
     "Le réseau social interne d'entreprise favorisant les échanges informels entre les employés. Partagez des posts avec texte et images, recevez des likes, dislikes et commentaires pour renforcer la cohésion et la collaboration au sein de votre organisation.",
 };
@@ -18,7 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={cn(lato.className, "bg-orange-1")}>{children}</body>
+      <body className={cn(lato.className, "bg-orange-1 text-gray-12")}>
+        {children}
+      </body>
     </html>
   );
 }
