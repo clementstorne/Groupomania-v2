@@ -1,10 +1,11 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Home, LogOut, Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import logo from "../../public/intraconnect-logo.svg";
 
 type BurgerButtonProps = {
   className?: string;
@@ -60,7 +61,7 @@ const NavbarLink = ({ href, label, icon, className }: NavbarLinkProps) => {
   return (
     <Link
       href={href}
-      className="flex items-center text-orange-9 hover:text-orange-11"
+      className={cn(buttonVariants({ variant: "link" }), "flex items-center")}
     >
       <>{icon}</>
       <span className="ml-2">{label}</span>
@@ -103,12 +104,12 @@ const Navbar = () => {
       )}
     >
       <div className="w-full flex justify-between items-center">
-        <Link href="/">
+        <Link href="/feed">
           <Image
-            src={"/logo.svg"}
-            alt="Logo de Groupomania, le réseau social interne d'entreprise"
+            src={logo}
+            alt="Logo d'intraconnect, le réseau social interne d'entreprise"
             width={249}
-            height={40}
+            height={80}
             priority={true}
           />
         </Link>

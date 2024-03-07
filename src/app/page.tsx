@@ -5,6 +5,8 @@ import { Paperclip, Speech, ThumbsUp } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import logo from "../../public/intraconnect-logo.svg";
+import image from "../../public/trois-collegues-discutent-intraconnect.webp";
 
 export const metadata: Metadata = {
   title: "intraconnect - Le réseau social interne d'entreprise",
@@ -73,30 +75,23 @@ const page = () => {
       >
         <figure
           className={cn(
-            "w-full h-60 rounded-lg overflow-hidden",
+            "w-full h-80 rounded-lg overflow-hidden",
             "md:h-full md:w-auto"
           )}
         >
           <Image
-            src={"/photo.jpg"}
-            alt="Logo de Groupomania, le réseau social interne d'entreprise"
-            width={1920}
-            height={1280}
+            src={image}
+            alt="Trois collègues discutent sur intraconnect avec quelqu'un sur leur ordinateur portable"
+            sizes="(min-width: 780px) calc(50vw - 32px), calc(100vw - 32px)"
             priority={true}
-            className="w-full h-full object-1/2-3/4 object-cover"
+            className="w-full h-full object-1/2-55p object-cover"
           />
         </figure>
         <article className={cn("space-y-8", "md:space-y-12")}>
           <div>
             <h1 className="flex flex-col items-center space-y-2">
               <span>Bienvenue sur</span>
-              <Image
-                src={"/logo.svg"}
-                alt="intraconnect"
-                width={498}
-                height={80}
-                priority={true}
-              />
+              <Image src={logo} alt="intraconnect" priority={true} />
             </h1>
             <p className="text-xl w-2/3 text-center mx-auto">
               votre solution tout-en-un pour une communication interne efficace
@@ -111,7 +106,7 @@ const page = () => {
             environnement convivial et sécurisé.
           </p>
           <Link
-            href="/login"
+            href="/signup"
             className={cn(
               buttonVariants({ variant: "default", size: "lg" }),
               "w-full"
