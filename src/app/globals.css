@@ -15,3 +15,9 @@
     @apply text-lg font-bold;
   }
 }
+
+@layer components {
+  .link {
+    @apply whitespace-nowrap text-base font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-8 disabled:pointer-events-none disabled:opacity-50 text-orange-9 underline-offset-4 hover:text-orange-11 hover:underline;
+  }
+}

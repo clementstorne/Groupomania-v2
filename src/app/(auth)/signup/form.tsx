@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { createNewUser } from "./action";
 
 const formSchema = z
   .object({
@@ -145,7 +146,8 @@ const SignupForm = ({ className }: SignupFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        // onSubmit={form.handleSubmit(onSubmit)}
+        action={createNewUser}
         className={cn(
           "w-full p-8 bg-orange-3 rounded-lg space-y-8 flex flex-col items-center",
           className

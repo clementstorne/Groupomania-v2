@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Dislikes {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime  @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(0)
+  UserId    String
+  PostId    Int?
+  Users     Users?    @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Dislikes_ibfk_7")
+  Posts     Posts?    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "Dislikes_ibfk_8")
+
+  @@index([PostId], map: "PostId")
+  @@index([UserId], map: "UserId")
+}
+
+model Likes {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime  @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(0)
+  UserId    String
+  PostId    Int?
+  Users     Users?    @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Likes_ibfk_7")
+  Posts     Posts?    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "Likes_ibfk_8")
+
+  @@index([PostId], map: "PostId")
+  @@index([UserId], map: "UserId")
+}
+
+model Posts {
+  id        Int        @id @default(autoincrement())
+  content   String     @db.Text
+  mediaUrl  String?    @db.VarChar(255)
+  createdAt DateTime   @db.DateTime(0)
+  updatedAt DateTime   @db.DateTime(0)
+  deletedAt DateTime?  @db.DateTime(0)
+  UserId    String
+  Dislikes  Dislikes[]
+  Likes     Likes[]
+  Users     Users?     @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Posts_ibfk_1")
+
+  @@index([UserId], map: "UserId")
+}
+
+model Users {
+  id       String @id @default(uuid())
+  email    String @unique(map: "email") @db.VarChar(100)
+  password  String    @db.VarChar(64)
+  firstname String     @default("") @db.VarChar(100)
+  lastname  String     @default("") @db.VarChar(100)
+  role      String     @default("user") @db.VarChar(5)
+  imageUrl  String?    @db.VarChar(255)
+  Dislikes  Dislikes[]
+  Likes     Likes[]
+  Posts     Posts[]
+}

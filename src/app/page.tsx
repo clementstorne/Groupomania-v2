@@ -105,15 +105,23 @@ const page = () => {
             créativité et à favoriser la collaboration, le tout dans un
             environnement convivial et sécurisé.
           </p>
-          <Link
-            href="/signup"
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "w-full"
-            )}
-          >
-            Inscrivez-vous maintenant
-          </Link>
+          <div className="space-y-4">
+            <Link
+              href="/signup"
+              className={cn(
+                buttonVariants({ variant: "default", size: "lg" }),
+                "w-full"
+              )}
+            >
+              Inscrivez-vous maintenant
+            </Link>
+            <p className="text-center">
+              Vous avez déjà un compte ?{" "}
+              <Link href="/login" className="link">
+                Connectez-vous
+              </Link>
+            </p>
+          </div>
         </article>
       </section>
 
