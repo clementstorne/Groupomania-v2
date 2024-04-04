@@ -121,28 +121,6 @@ const SignupForm = ({ className }: SignupFormProps) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const { firstname, lastname, email, password } = values;
-    // try {
-    //   const res = await UsersService.createUser({
-    //     name,
-    //     email,
-    //     password,
-    //     role,
-    //   });
-    //   if (res.status === 201) {
-    //     signIn(undefined, { callbackUrl: "/dashboard" });
-    //   }
-    // } catch (error: any) {
-    //   if (error.response.status === 409) {
-    //     setErrorMessage("Cet email est déjà utilisé");
-    //   } else {
-    //     console.error(error);
-    //   }
-    // }
-    console.log(values);
-  };
-
   return (
     <Form {...form}>
       <form
