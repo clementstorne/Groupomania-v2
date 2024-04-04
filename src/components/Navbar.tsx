@@ -2,8 +2,10 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Home, LogOut, Menu, User, X } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import logo from "../../public/intraconnect-logo.svg";
 
@@ -43,11 +45,6 @@ const links: Link[] = [
     label: "Profil",
     icon: <User />,
   },
-  {
-    href: "/login",
-    label: "Se déconnecter",
-    icon: <LogOut />,
-  },
 ];
 
 type NavbarLinkProps = {
@@ -66,6 +63,23 @@ const NavbarLink = ({ href, label, icon, className }: NavbarLinkProps) => {
       <>{icon}</>
       <span className="ml-2">{label}</span>
     </Link>
+  );
+};
+
+const LogoutButton = () => {
+  const router = useRouter();
+
+  return (
+    <Button
+      variant="link"
+      className="flex items-center"
+      onClick={() => {
+        signOut();
+        router.push("/login");
+      }}
+    >
+      <LogOut /> <span className="ml-2">Se déconnecter</span>
+    </Button>
   );
 };
 
@@ -130,6 +144,7 @@ const Navbar = () => {
                 icon={link.icon}
               />
             ))}
+            <LogoutButton />
           </nav>
         </div>
       </div>
@@ -151,6 +166,7 @@ const Navbar = () => {
             icon={link.icon}
           />
         ))}
+        <LogoutButton />
       </nav>
     </header>
   );
