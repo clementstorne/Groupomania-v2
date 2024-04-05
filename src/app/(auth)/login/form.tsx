@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -59,7 +59,6 @@ type LoginFormProps = {
 
 const LoginForm = ({ className }: LoginFormProps) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,14 +69,12 @@ const LoginForm = ({ className }: LoginFormProps) => {
     },
   });
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/feed";
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await signIn("credentials", {
         email: values.email,
         password: values.password,
-        callbackUrl,
+        callbackUrl: "/feed",
         redirect: false,
       });
 
@@ -100,6 +97,10 @@ const LoginForm = ({ className }: LoginFormProps) => {
           className
         )}
       >
+        {errorMessage && (
+          <p className="text-sm font-bold text-red-700">{errorMessage}</p>
+        )}
+
         <FormField
           control={form.control}
           name="email"
@@ -126,12 +127,6 @@ const LoginForm = ({ className }: LoginFormProps) => {
             </FormItem>
           )}
         />
-
-        {errorMessage && (
-          <p className="text-sm font-medium text-red-700 dark:text-red-900 !mt-16">
-            {errorMessage}
-          </p>
-        )}
 
         <div className="w-full !mt-14 flex flex-col space-y-4">
           <Button type="submit" size="lg" className="!w-full">
