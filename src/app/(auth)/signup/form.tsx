@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createNewUser } from "./action";
+import { checkIfUserExists, createNewUser } from "./action";
 
 const formSchema = z
   .object({
@@ -121,16 +121,36 @@ const SignupForm = ({ className }: SignupFormProps) => {
     },
   });
 
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { email } = values;
+
+    try {
+      const userAlreadyExists = await checkIfUserExists(email);
+
+      if (userAlreadyExists) {
+        setErrorMessage(`L'email ${email} est déjà utilisé`);
+        return;
+      } else {
+        createNewUser(values);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Form {...form}>
       <form
-        // onSubmit={form.handleSubmit(onSubmit)}
-        action={createNewUser}
+        onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
           "w-full p-8 bg-orange-3 rounded-lg space-y-8 flex flex-col items-center",
           className
         )}
       >
+        {errorMessage && (
+          <p className="text-sm font-bold text-red-700">{errorMessage}</p>
+        )}
+
         <FormField
           control={form.control}
           name="firstname"
@@ -196,12 +216,6 @@ const SignupForm = ({ className }: SignupFormProps) => {
             </FormItem>
           )}
         />
-
-        {errorMessage && (
-          <p className="text-sm font-medium text-red-700 dark:text-red-900 !mt-16">
-            {errorMessage}
-          </p>
-        )}
 
         <div className="w-full !mt-14 flex flex-col space-y-4">
           <Button type="submit" size="lg" className="!w-full">

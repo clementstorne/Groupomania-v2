@@ -132,7 +132,10 @@ const LoginForm = ({ className }: LoginFormProps) => {
           <Button type="submit" size="lg" className="!w-full">
             Je me connecte
           </Button>
-          <Link href={"/login"} className={buttonVariants({ variant: "link" })}>
+          <Link
+            href={"/signup"}
+            className={buttonVariants({ variant: "link" })}
+          >
             Je n&apos;ai pas encore de compte
           </Link>
         </div>
