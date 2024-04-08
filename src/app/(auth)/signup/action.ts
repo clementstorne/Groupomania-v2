@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
 export const checkIfUserExists = async (email: string) => {
-  const userAlreadyExists = await prisma.users.findUnique({
+  const userAlreadyExists = await prisma.user.findUnique({
     where: {
       email: email,
     },
@@ -31,7 +31,7 @@ export const createNewUser = async ({
 }) => {
   const hash = await bcrypt.hash(password, 10);
 
-  await prisma.users.create({
+  await prisma.user.create({
     data: {
       email,
       password: hash,

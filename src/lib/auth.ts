@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
 
-          const user = await prisma.users.findUnique({
+          const user = await prisma.user.findUnique({
             where: {
               email: email,
             },

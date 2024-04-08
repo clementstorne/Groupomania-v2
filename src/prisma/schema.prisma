@@ -7,58 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Dislikes {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @db.DateTime(0)
-  updatedAt DateTime  @db.DateTime(0)
-  deletedAt DateTime? @db.DateTime(0)
-  UserId    String
-  PostId    Int?
-  Users     Users?    @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Dislikes_ibfk_7")
-  Posts     Posts?    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "Dislikes_ibfk_8")
-
-  @@index([PostId], map: "PostId")
-  @@index([UserId], map: "UserId")
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique(map: "email")
+  password  String
+  firstname String
+  lastname  String
+  role      UserRole
+  imageUrl  String?
+  posts     Post[]
+  Likes     Like[]
+  Dislikes  Dislike[]
 }
 
-model Likes {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @db.DateTime(0)
-  updatedAt DateTime  @db.DateTime(0)
-  deletedAt DateTime? @db.DateTime(0)
-  UserId    String
-  PostId    Int?
-  Users     Users?    @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Likes_ibfk_7")
-  Posts     Posts?    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "Likes_ibfk_8")
-
-  @@index([PostId], map: "PostId")
-  @@index([UserId], map: "UserId")
+enum UserRole {
+  user
+  admin
 }
 
-model Posts {
-  id        Int        @id @default(autoincrement())
-  content   String     @db.Text
-  mediaUrl  String?    @db.VarChar(255)
-  createdAt DateTime   @db.DateTime(0)
-  updatedAt DateTime   @db.DateTime(0)
-  deletedAt DateTime?  @db.DateTime(0)
-  UserId    String
-  Dislikes  Dislikes[]
-  Likes     Likes[]
-  Users     Users?     @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Posts_ibfk_1")
-
-  @@index([UserId], map: "UserId")
+model Post {
+  id        String    @id @default(uuid())
+  content   String
+  media     String?
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @db.DateTime()
+  likes     Like[]
+  dislikes  Dislike[]
 }
 
-model Users {
-  id       String @id @default(uuid())
-  email    String @unique(map: "email") @db.VarChar(100)
-  password  String    @db.VarChar(64)
-  firstname String     @default("") @db.VarChar(100)
-  lastname  String     @default("") @db.VarChar(100)
-  role      String     @default("user") @db.VarChar(5)
-  imageUrl  String?    @db.VarChar(255)
-  Dislikes  Dislikes[]
-  Likes     Likes[]
-  Posts     Posts[]
+model Dislike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
 }
