@@ -16,3 +16,18 @@ export interface DbPost {
   createdAt: Date;
   updatedAt: Date | null;
 }
+
+export interface DbReaction {
+  id: string;
+  createdAt: Date;
+  type: ReactionCategories;
+  userId: string;
+  postId: string;
+}
+
+export type ReactionCategories =
+  | "like"
+  | "dislike"
+  | "celebrate"
+  | "insightful"
+  | "funny";

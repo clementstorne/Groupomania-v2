@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={cn(lato.className, "bg-orange-1 text-gray-12")}>
+      <body className={cn(lato.className, "bg-gray-2 text-gray-12")}>
         {children}
       </body>
     </html>

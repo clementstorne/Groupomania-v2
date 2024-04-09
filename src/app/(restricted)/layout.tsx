@@ -11,8 +11,12 @@ const layout = ({
       <Navbar />
       <main
         className={cn(
-          "mt-20 mb-8 space-y-8 flex flex-col items-center",
-          "md:mb-16 md:space-y-16"
+          "space-y-8",
+          "md:space-y-16",
+          "flex flex-col items-center",
+          "mt-20 mb-8 md:mb-16",
+          "px-3 py-6",
+          "space-y-2 md:space-y-4"
         )}
       >
         {children}

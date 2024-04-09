@@ -17,3 +17,12 @@ export const getAuthorData = async (authorId: string) => {
   });
   return author;
 };
+
+export const getPostReactions = async (postId: string) => {
+  const reactions = await prisma.reaction.findMany({
+    where: {
+      postId: postId,
+    },
+  });
+  return reactions;
+};

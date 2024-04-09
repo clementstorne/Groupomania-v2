@@ -7,7 +7,10 @@ const page = async () => {
 
   return (
     <div
-      className={cn("max-w-[600px] mx-4 space-y-4", "md:max-w-[800px] md:mx-8")}
+      className={cn(
+        "px-3 py-6 space-y-2 max-w-[630px]",
+        "md:mx-8 md:space-y-4"
+      )}
     >
       {posts.map((post) => (
         <Post key={post.id} {...post} />

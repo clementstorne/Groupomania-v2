@@ -8,16 +8,15 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique(map: "email")
+  id        String     @id @default(uuid())
+  email     String     @unique(map: "email")
   password  String
   firstname String
   lastname  String
   role      UserRole
   imageUrl  String?
   posts     Post[]
-  Likes     Like[]
-  Dislikes  Dislike[]
+  reactions Reaction[]
 }
 
 enum UserRole {
@@ -26,31 +25,30 @@ enum UserRole {
 }
 
 model Post {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   content   String
   media     String?
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @db.DateTime()
-  likes     Like[]
-  dislikes  Dislike[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @db.DateTime()
+  reactions Reaction[]
 }
 
-model Dislike {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
+enum ReactionTypes {
+  like
+  dislike
+  celebrate
+  insightful
+  funny
 }
 
-model Like {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Reaction {
+  id        String        @id @default(uuid())
+  createdAt DateTime      @default(now())
+  type      ReactionTypes
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
 }
