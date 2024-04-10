@@ -53,6 +53,11 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: user.id,
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            role: user.role,
+            image: user.imageUrl,
           };
         }
 
@@ -61,20 +66,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: ({ token, user }) => {
-      if (user) {
-        return {
-          ...token,
-          user,
-        };
-      }
+    jwt: ({ token }) => {
+      console.log(token);
       return token;
     },
     session: ({ session, token }) => {
+      console.log(session);
       return {
-        ...session,
         user: {
-          ...session.user,
+          id: token.id,
+          email: token.email,
+          firstname: token.firstname,
+          lastname: token.lastname,
+          role: token.role,
         },
       };
     },

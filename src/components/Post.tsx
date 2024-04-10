@@ -1,6 +1,7 @@
 import { ReactionButton } from "@/components/ReactionButton";
 import ReactionIcon from "@/components/ReactionIcon";
 import UserAvatar from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,12 +10,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authOptions } from "@/lib/auth";
 import { REACTIONS } from "@/lib/const";
 import { getAuthorData, getPostReactions } from "@/lib/data";
 import { formatDateTime } from "@/lib/dateUtils";
 import { cn } from "@/lib/utils";
 import { DbPost, DbReaction, DbUser, ReactionCategories } from "@/types";
+import { Pencil, Trash2 } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+
+const AdminButton = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  return (
+    <Button
+      variant="ghost"
+      className={cn(
+        "text-gray-11 !mt-0",
+        "hover:text-orange-10 hover:bg-gray-4"
+      )}
+    >
+      {children}
+    </Button>
+  );
+};
 
 type PostProps = DbPost;
 
@@ -26,6 +49,12 @@ const Post = async ({
   createdAt,
   updatedAt,
 }: PostProps) => {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/login");
+  }
+  const user = session.user as Omit<DbUser, "password" | "imageUrl">;
+
   const author = (await getAuthorData(authorId)) as DbUser;
   const authorFullName = `${author?.firstname} ${author?.lastname}`;
 
@@ -41,18 +70,44 @@ const Post = async ({
     getNumberOfReactions(reactionsArray, reaction)
   );
 
+  const canUserEditAndDeletePost = (
+    userId: string,
+    authorId: string,
+    role: "admin" | "user"
+  ) => {
+    if (role === "admin") {
+      return true;
+    } else if (userId === authorId) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <Card className="border-gray-6 max-w-[598px]">
-      <CardHeader className="p-4 flex flex-row items-center space-x-4">
-        <UserAvatar name={authorFullName} />
-        <div className="flex flex-col">
-          <CardTitle>{authorFullName}</CardTitle>
-          <CardDescription className="text-gray-11">
-            {updatedAt
-              ? `Modifié ${formatDateTime(updatedAt)}`
-              : `Publié ${formatDateTime(createdAt)}`}
-          </CardDescription>
+      <CardHeader className="p-4 flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center space-x-4">
+          <UserAvatar name={authorFullName} />
+          <div className="flex flex-col">
+            <CardTitle>{authorFullName}</CardTitle>
+            <CardDescription className="text-gray-11">
+              {updatedAt
+                ? `Modifié ${formatDateTime(updatedAt)}`
+                : `Publié ${formatDateTime(createdAt)}`}
+            </CardDescription>
+          </div>
         </div>
+        {canUserEditAndDeletePost(user.id, author.id, user.role) && (
+          <div className="flex flex-row items-center space-x-2">
+            <AdminButton>
+              <Pencil className={cn("h-6 w-6", "md:h-4 md:w-4")} />
+            </AdminButton>
+            <AdminButton>
+              <Trash2 className={cn("h-6 w-6", "md:h-4 md:w-4")} />
+            </AdminButton>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="p-0">
         <p className="mx-4 mb-2">{content}</p>
