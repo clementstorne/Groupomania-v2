@@ -70,6 +70,23 @@ const Post = async ({
     getNumberOfReactions(reactionsArray, reaction)
   );
 
+  const hasUserReacted = (reactionsArray: DbReaction[]) => {
+    const filteredReactions = reactionsArray.filter(
+      (reaction) => reaction.userId === user.id
+    );
+    return filteredReactions.length === 0 ? false : true;
+  };
+
+  const getUserReaction = (reactionsArray: DbReaction[]) => {
+    if (hasUserReacted(reactionsArray) === true) {
+      const userReaction = reactionsArray.filter(
+        (reaction) => reaction.userId === user.id
+      );
+      return userReaction[0].type;
+    }
+    return null;
+  };
+
   const canUserEditAndDeletePost = (
     userId: string,
     authorId: string,
@@ -142,7 +159,11 @@ const Post = async ({
           )}
         >
           {REACTIONS.map((reaction) => (
-            <ReactionButton key={reaction} type={reaction} isChecked={false} />
+            <ReactionButton
+              key={reaction}
+              type={reaction}
+              isChecked={reaction === getUserReaction(reactionsArray)}
+            />
           ))}
         </div>
       </CardFooter>

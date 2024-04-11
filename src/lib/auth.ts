@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { DbUser } from "@/types";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
@@ -23,8 +24,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Mot de passe", type: "password" },
       },
-      //@ts-ignore
-      async authorize(credentials: { email: string; password: string }) {
+      async authorize(credentials) {
         const parsedCredentials = z
           .object({
             email: z.string().email(),
@@ -51,13 +51,15 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          const { id, firstname, lastname, role, imageUrl } = user;
+
           return {
-            id: user.id,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            role: user.role,
-            image: user.imageUrl,
+            id,
+            email,
+            firstname,
+            lastname,
+            role,
+            imageUrl,
           };
         }
 
@@ -66,21 +68,31 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: ({ token }) => {
-      console.log(token);
+    signIn: async ({ user, account, profile, email, credentials }) => {
+      return true;
+    },
+    jwt: async ({ token, user }) => {
+      if (user) {
+        const userWithDetails = user as Omit<DbUser, "password">;
+        token.firstname = userWithDetails.firstname;
+        token.lastname = userWithDetails.lastname;
+        token.role = userWithDetails.role;
+        token.imageUrl = userWithDetails.imageUrl;
+      }
       return token;
     },
-    session: ({ session, token }) => {
-      console.log(session);
-      return {
-        user: {
-          id: token.id,
+    session: async ({ session, token }) => {
+      if (session.user) {
+        session.user = {
+          // @ts-ignore
+          id: token.sub,
           email: token.email,
           firstname: token.firstname,
           lastname: token.lastname,
           role: token.role,
-        },
-      };
+        };
+      }
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
