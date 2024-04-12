@@ -101,6 +101,10 @@ const Post = async ({
     }
   };
 
+  const handleOnClick = (type: ReactionCategories) => {
+    console.log(type);
+  };
+
   return (
     <Card className="border-gray-6 max-w-[598px]">
       <CardHeader className="p-4 flex flex-row items-center justify-between">
@@ -163,6 +167,8 @@ const Post = async ({
               key={reaction}
               type={reaction}
               isChecked={reaction === getUserReaction(reactionsArray)}
+              userId={user.id}
+              postId={id}
             />
           ))}
         </div>

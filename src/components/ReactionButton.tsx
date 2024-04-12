@@ -1,5 +1,6 @@
 "use client";
 
+import { reactToPost } from "@/app/(restricted)/feed/action";
 import ReactionIcon from "@/components/ReactionIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -23,15 +24,23 @@ const getLabel = (category: ReactionCategories) => {
 type ReactionButtonProps = {
   type: ReactionCategories;
   isChecked: boolean;
+  userId: string;
+  postId: string;
   className?: string;
 };
 
 export function ReactionButton({
   type,
   isChecked,
+  userId,
+  postId,
   className,
 }: ReactionButtonProps) {
   const label = getLabel(type);
+
+  const handleOnClick = async () => {
+    await reactToPost(userId, postId, type);
+  };
 
   return (
     <Button
@@ -42,6 +51,7 @@ export function ReactionButton({
         isChecked && "text-orange-10",
         className
       )}
+      onClick={handleOnClick}
     >
       <ReactionIcon
         category={type}
