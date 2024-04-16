@@ -101,15 +101,14 @@ const Post = async ({
     }
   };
 
-  const handleOnClick = (type: ReactionCategories) => {
-    console.log(type);
-  };
-
   return (
     <Card className="border-gray-6 max-w-[598px]">
       <CardHeader className="p-4 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center space-x-4">
-          <UserAvatar name={authorFullName} />
+          <UserAvatar
+            src={author.imageUrl ? author.imageUrl : undefined}
+            name={authorFullName}
+          />
           <div className="flex flex-col">
             <CardTitle>{authorFullName}</CardTitle>
             <CardDescription className="text-gray-11">

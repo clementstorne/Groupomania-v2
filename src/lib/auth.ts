@@ -90,6 +90,7 @@ export const authOptions: NextAuthOptions = {
           firstname: token.firstname,
           lastname: token.lastname,
           role: token.role,
+          imageUrl: token.imageUrl,
         };
       }
       return session;

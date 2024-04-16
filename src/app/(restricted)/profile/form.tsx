@@ -17,92 +17,38 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { updateProfile } from "./action";
 
-const formSchema = z
-  .object({
-    firstname: z
-      .string()
-      .min(1, {
-        message: "Ce champ est requis",
-      })
-      .refine(
-        (value) => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/.test(value),
-        "Le prénom doit commencer par une lettre majuscule, suivie de lettres minuscules, d'espaces, de tirets, d'apostrophes ou de points. Les caractères spéciaux ne sont pas autorisés."
-      ),
-    lastname: z
-      .string()
-      .min(1, {
-        message: "Ce champ est requis",
-      })
-      .refine(
-        (value) => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/.test(value),
-        "Le prénom doit commencer par une lettre majuscule, suivie de lettres minuscules, d'espaces, de tirets, d'apostrophes ou de points. Les caractères spéciaux ne sont pas autorisés."
-      ),
-    email: z
-      .string()
-      .min(1, {
-        message: "Ce champ est requis",
-      })
-      .email({
-        message: "Cet email n'est pas valide",
-      }),
-    password: z
-      .string({
-        required_error: "Ce champ est requis",
-      })
-      .min(8, {
-        message: "Le mot de passe doit contenir au moins 8 caractères",
-      })
-      .refine(
-        (value) => /(?=.*\d)/.test(value),
-        "Le mot de passe doit contenir au moins un chiffre"
-      )
-      .refine(
-        (value) => /(?=.*[a-z])/.test(value),
-        "Le mot de passe doit contenir au moins une minuscule"
-      )
-      .refine(
-        (value) => /(?=.*[A-Z])/.test(value),
-        "Le mot de passe doit contenir au moins une majuscule"
-      )
-      .refine(
-        (value) => /(?=.*[\W|_])/.test(value),
-        "Le mot de passe doit contenir au moins un caractère spécial"
-      ),
-    confirmPassword: z
-      .string({
-        required_error: "Ce champ est requis",
-      })
-      .min(8, {
-        message: "Le mot de passe doit contenir au moins 8 caractères",
-      })
-      .refine(
-        (value) => /(?=.*\d)/.test(value),
-        "Le mot de passe doit contenir au moins un chiffre"
-      )
-      .refine(
-        (value) => /(?=.*[a-z])/.test(value),
-        "Le mot de passe doit contenir au moins une minuscule"
-      )
-      .refine(
-        (value) => /(?=.*[A-Z])/.test(value),
-        "Le mot de passe doit contenir au moins une majuscule"
-      )
-      .refine(
-        (value) => /(?=.*[\W|_])/.test(value),
-        "Le mot de passe doit contenir au moins un caractère spécial"
-      ),
-    avatar: z.instanceof(File).optional(),
-  })
-  .refine(
-    (values) => {
-      return values.password === values.confirmPassword;
-    },
-    {
-      message: "Les mots de passe ne sont pas identiques",
-      path: ["confirmPassword"],
-    }
-  );
+const formSchema = z.object({
+  firstname: z
+    .string()
+    .min(1, {
+      message: "Ce champ est requis",
+    })
+    .refine(
+      (value) => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/.test(value),
+      "Le prénom doit commencer par une lettre majuscule, suivie de lettres minuscules, d'espaces, de tirets, d'apostrophes ou de points. Les caractères spéciaux ne sont pas autorisés."
+    ),
+  lastname: z
+    .string()
+    .min(1, {
+      message: "Ce champ est requis",
+    })
+    .refine(
+      (value) => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/.test(value),
+      "Le prénom doit commencer par une lettre majuscule, suivie de lettres minuscules, d'espaces, de tirets, d'apostrophes ou de points. Les caractères spéciaux ne sont pas autorisés."
+    ),
+  email: z
+    .string()
+    .min(1, {
+      message: "Ce champ est requis",
+    })
+    .email({
+      message: "Cet email n'est pas valide",
+    }),
+
+  avatar: z.instanceof(File).optional(),
+});
 
 type ProfileFormProps = {
   id: string;
@@ -126,7 +72,7 @@ const ProfileForm = ({
 
   const fullname = `${firstname} ${lastname}`;
 
-  // const updateProfileWithId = updateProfile.bind(null, id);
+  const updateProfileWithId = updateProfile.bind(null, id);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -134,8 +80,6 @@ const ProfileForm = ({
       firstname: firstname,
       lastname: lastname,
       email: email,
-      password: "",
-      confirmPassword: "",
       avatar: undefined,
     },
   });
@@ -169,7 +113,7 @@ const ProfileForm = ({
   return (
     <Form {...form}>
       <form
-        // action={updateProfileWithId}
+        action={updateProfileWithId}
         className={cn(
           "w-full p-8 bg-orange-3 rounded-lg space-y-8 flex flex-col items-center",
           className
@@ -184,15 +128,17 @@ const ProfileForm = ({
           name="avatar"
           render={({ field }) => (
             <FormItem className="flex flex-col items-center">
-              {imageUrl ? (
-                <UserAvatar
-                  name={fullname}
-                  src={imageUrl}
-                  className="w-20 h-20"
-                />
-              ) : (
-                <UserAvatar name={fullname} className="w-20 h-20" />
-              )}
+              <div className="w-40 h-40">
+                {imageUrl ? (
+                  <UserAvatar
+                    src={avatar}
+                    name={fullname}
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <UserAvatar name={fullname} className="w-full h-full" />
+                )}
+              </div>
               <input
                 type="file"
                 name="image"
@@ -254,34 +200,15 @@ const ProfileForm = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
-              <FormControl>
-                <Input type="password" autoComplete="new-password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirmer le mot de passe</FormLabel>
-              <FormControl>
-                <Input type="password" autoComplete="new-password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="w-full !mt-14 flex flex-col space-y-4">
+          <Button
+            variant="outline"
+            className="w-full font-bold"
+            onClick={handleUploadButtonClick}
+          >
+            Changer de mot de passe
+          </Button>
           <Button type="submit" size="lg" className="!w-full">
             Modifier mon profil
           </Button>
