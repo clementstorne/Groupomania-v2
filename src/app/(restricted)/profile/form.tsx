@@ -1,7 +1,7 @@
 "use client";
 
 import UserAvatar from "@/components/UserAvatar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,10 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DialogDeleteProfile from "./DialogDeleteProfile";
 import { updateProfile } from "./action";
 
 const formSchema = z.object({
@@ -212,12 +212,7 @@ const ProfileForm = ({
           <Button type="submit" size="lg" className="!w-full">
             Modifier mon profil
           </Button>
-          <Link
-            href={"/login"}
-            className={buttonVariants({ variant: "destructive" })}
-          >
-            Supprimer mon profile
-          </Link>
+          <DialogDeleteProfile userId={id} />
         </div>
       </form>
     </Form>

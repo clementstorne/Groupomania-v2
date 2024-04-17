@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { statfs, unlink, writeFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { join } from "path";
 
 export const deleteOldAvatar = async (avatarToDelete: string) => {
@@ -86,5 +87,33 @@ export const updateProfile = async (userId: string, formData: FormData) => {
   });
   revalidatePath("/feed");
   revalidatePath("/profile");
-  // redirect("/profile");
+};
+
+export const deleteProfile = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      imageUrl: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.imageUrl) {
+    await deleteOldAvatar(user.imageUrl);
+  }
+
+  await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+
+  revalidatePath("/feed");
+  revalidatePath("/profile");
+  revalidatePath("/login");
+  // signOut();
+  redirect("/");
 };
