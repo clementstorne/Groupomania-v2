@@ -33,15 +33,23 @@ const DialogDeleteProfile = ({ userId }: DialogDeleteProfileProps) => {
           <DialogTitle>Confirmer la suppression du profil</DialogTitle>
           <DialogDescription>
             Êtes-vous sûr de vouloir supprimer définitivement votre profil
-            intraconnect ? Cette action est irréversible.
+            intraconnect ?{" "}
+            <span className="font-bold">Cette action est irréversible.</span>
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="grid grid-cols-2">
-          <Button variant="destructive" onClick={handleOnClick}>
+        <DialogFooter>
+          <Button
+            variant="destructive"
+            size="lg"
+            onClick={handleOnClick}
+            className="w-full"
+          >
             Supprimer le profil
           </Button>
           <DialogClose asChild>
-            <Button variant="outline">Annuler</Button>
+            <Button variant="outline" className="w-full">
+              Annuler
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DialogChangePassword from "./DialogChangePassword";
 import DialogDeleteProfile from "./DialogDeleteProfile";
 import { updateProfile } from "./action";
 
@@ -202,15 +203,9 @@ const ProfileForm = ({
         />
 
         <div className="w-full !mt-14 flex flex-col space-y-4">
-          <Button
-            variant="outline"
-            className="w-full font-bold"
-            onClick={handleUploadButtonClick}
-          >
-            Changer de mot de passe
-          </Button>
+          <DialogChangePassword userId={id} />
           <Button type="submit" size="lg" className="!w-full">
-            Modifier mon profil
+            Enregistrer les modifications
           </Button>
           <DialogDeleteProfile userId={id} />
         </div>

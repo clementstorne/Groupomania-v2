@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
 import { statfs, unlink, writeFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -114,6 +115,38 @@ export const deleteProfile = async (userId: string) => {
   revalidatePath("/feed");
   revalidatePath("/profile");
   revalidatePath("/login");
-  // signOut();
   redirect("/");
+};
+
+export const changePassword = async (userId: string, formData: FormData) => {
+  const oldPassword = (await formData.get("oldPassword")) as string;
+  const newPassword = (await formData.get("newPassword")) as string;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      password: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const passwordsMatch = await bcrypt.compare(oldPassword, user.password);
+
+  if (!passwordsMatch) {
+    throw new Error("Wrong password");
+  }
+
+  const hash = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      password: hash,
+    },
+  });
 };
