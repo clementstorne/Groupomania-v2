@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 import { signOut } from "next-auth/react";
 import { deleteProfile } from "./action";
 
@@ -19,8 +20,14 @@ type DialogDeleteProfileProps = {
 };
 
 const DialogDeleteProfile = ({ userId }: DialogDeleteProfileProps) => {
+  const { toast } = useToast();
+
   const handleOnClick = async () => {
     signOut();
+    toast({
+      variant: "destructive",
+      description: "Votre profil a été supprimé",
+    });
     await deleteProfile(userId);
   };
   return (

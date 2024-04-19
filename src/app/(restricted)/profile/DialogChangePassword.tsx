@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -94,6 +95,8 @@ type DialogChangePasswordProps = {
 
 const DialogChangePassword = ({ userId }: DialogChangePasswordProps) => {
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { toast } = useToast();
 
   const changePasswordWithId = changePassword.bind(null, userId);
 
@@ -176,12 +179,7 @@ const DialogChangePassword = ({ userId }: DialogChangePasswordProps) => {
               )}
             />
 
-            <Button
-              type="submit"
-              variant="destructive"
-              size="lg"
-              className="w-full"
-            >
+            <Button type="submit" size="lg" className="w-full">
               Modifier mon mot de passe
             </Button>
           </form>

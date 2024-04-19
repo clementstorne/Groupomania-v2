@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={cn(lato.className, "bg-gray-2 text-gray-12")}>
         {children}
+        <Toaster />
       </body>
     </html>
   );

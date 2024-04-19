@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -110,6 +111,8 @@ type SignupFormProps = {
 const SignupForm = ({ className }: SignupFormProps) => {
   const [errorMessage, setErrorMessage] = useState("");
 
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -131,7 +134,10 @@ const SignupForm = ({ className }: SignupFormProps) => {
         setErrorMessage(`L'email ${email} est déjà utilisé`);
         return;
       } else {
-        createNewUser(values);
+        toast({
+          description: "Votre profil a été créé",
+        });
+        await createNewUser(values);
       }
     } catch (error) {
       console.error(error);
