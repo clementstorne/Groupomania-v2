@@ -2,7 +2,7 @@ import Post from "@/components/Post";
 import { getPosts } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const page = async () => {
+const Page = async () => {
   const posts = await getPosts();
 
   return (
@@ -19,4 +19,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

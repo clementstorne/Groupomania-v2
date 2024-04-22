@@ -9,6 +9,22 @@ export const getPosts = async () => {
   return posts;
 };
 
+export const getUserData = async (userId: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      firstname: true,
+      lastname: true,
+      email: true,
+      imageUrl: true,
+    },
+  });
+  return user;
+};
+
 export const getAuthorData = async (authorId: string) => {
   const author = await prisma.user.findUniqueOrThrow({
     where: {

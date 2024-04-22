@@ -94,11 +94,10 @@ type DialogChangePasswordProps = {
 };
 
 const DialogChangePassword = ({ userId }: DialogChangePasswordProps) => {
+  const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const { toast } = useToast();
-
-  const changePasswordWithId = changePassword.bind(null, userId);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -109,8 +108,23 @@ const DialogChangePassword = ({ userId }: DialogChangePasswordProps) => {
     },
   });
 
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const formData = new FormData();
+    formData.append("oldPassword", values.oldPassword);
+    formData.append("newPassword", values.newPassword);
+    try {
+      await changePassword(userId, formData);
+      setOpen(false);
+      toast({
+        description: "Votre mot de passe a été mis à jour",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Modifier mon mot de passe</Button>
       </DialogTrigger>
@@ -120,7 +134,7 @@ const DialogChangePassword = ({ userId }: DialogChangePasswordProps) => {
         </DialogHeader>
         <Form {...form}>
           <form
-            action={changePasswordWithId}
+            onSubmit={form.handleSubmit(onSubmit)}
             className={cn("w-full space-y-8 flex flex-col items-center")}
           >
             {errorMessage && (

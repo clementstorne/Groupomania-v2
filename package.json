@@ -23,6 +23,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/luxon": "^3.4.2",
+    "@types/uuid": "^9.0.8",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -39,8 +40,10 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",
+    "sharp": "^0.33.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

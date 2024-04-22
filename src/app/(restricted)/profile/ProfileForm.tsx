@@ -1,6 +1,5 @@
 "use client";
 
-import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,11 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DialogChangeAvatar from "./DialogChangeAvatar";
 import DialogChangePassword from "./DialogChangePassword";
 import DialogDeleteProfile from "./DialogDeleteProfile";
 import { updateProfile } from "./action";
@@ -69,11 +70,10 @@ const ProfileForm = ({
   className,
 }: ProfileFormProps) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [avatar, setAvatar] = useState(imageUrl);
+
+  const { toast } = useToast();
 
   const fullname = `${firstname} ${lastname}`;
-
-  const updateProfileWithId = updateProfile.bind(null, id);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,40 +81,29 @@ const ProfileForm = ({
       firstname: firstname,
       lastname: lastname,
       email: email,
-      avatar: undefined,
     },
   });
 
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const formData = new FormData();
+    formData.append("firstname", values.firstname);
+    formData.append("lastname", values.lastname);
+    formData.append("email", values.email);
 
-  const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const newAvatar = e.target.files[0];
-
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        if (event.target && event.target.result) {
-          const imageUrl = event.target.result as string;
-          setAvatar(imageUrl);
-        }
-      };
-
-      reader.readAsDataURL(newAvatar);
-
-      form.setValue("avatar", newAvatar);
+    try {
+      await updateProfile(id, formData);
+      toast({
+        description: "Votre profil a été mis à jour",
+      });
+    } catch (error) {
+      console.error(error);
     }
-  };
-
-  const handleUploadButtonClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    hiddenFileInput.current?.click();
   };
 
   return (
     <Form {...form}>
       <form
-        action={updateProfileWithId}
+        onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
           "w-full p-8 bg-orange-3 rounded-lg space-y-8 flex flex-col items-center",
           className
@@ -124,44 +113,12 @@ const ProfileForm = ({
           <p className="text-sm font-bold text-red-700">{errorMessage}</p>
         )}
 
-        <FormField
-          control={form.control}
-          name="avatar"
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-center">
-              <div className="w-40 h-40">
-                {imageUrl ? (
-                  <UserAvatar
-                    src={avatar}
-                    name={fullname}
-                    className="w-full h-full"
-                  />
-                ) : (
-                  <UserAvatar name={fullname} className="w-full h-full" />
-                )}
-              </div>
-              <input
-                type="file"
-                name="image"
-                id="avatar"
-                className="hidden"
-                aria-describedby="Avatar-label"
-                accept="image/png, image/jpg, image/jpeg, image/svg+xml, image/webp"
-                ref={hiddenFileInput}
-                onChange={handleImageInput}
-              />
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full font-bold"
-                onClick={handleUploadButtonClick}
-              >
-                {imageUrl ? "Changer de Avatar" : "Ajouter un Avatar"}
-              </Button>
-            </FormItem>
-          )}
+        <DialogChangeAvatar
+          fullname={fullname}
+          imageUrl={imageUrl}
+          userId={id}
         />
+
         <FormField
           control={form.control}
           name="firstname"
@@ -202,9 +159,13 @@ const ProfileForm = ({
           )}
         />
 
-        <div className="w-full !mt-14 flex flex-col space-y-4">
+        <FormItem className="flex flex-col space-y-1">
+          <FormLabel>Mot de passe</FormLabel>
           <DialogChangePassword userId={id} />
-          <Button type="submit" size="lg" className="!w-full">
+        </FormItem>
+
+        <div className="w-full !mt-14 flex flex-col space-y-4">
+          <Button type="submit" size="lg">
             Enregistrer les modifications
           </Button>
           <DialogDeleteProfile userId={id} />

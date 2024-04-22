@@ -64,7 +64,7 @@ const FeatureCard = ({ icon, title, content, className }: FeatureCardProps) => {
   );
 };
 
-const page = () => {
+const Page = () => {
   return (
     <main>
       <section
@@ -156,4 +156,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

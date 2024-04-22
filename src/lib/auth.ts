@@ -71,13 +71,10 @@ export const authOptions: NextAuthOptions = {
     signIn: async ({ user, account, profile, email, credentials }) => {
       return true;
     },
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, trigger, session }) => {
       if (user) {
         const userWithDetails = user as Omit<DbUser, "password">;
-        token.firstname = userWithDetails.firstname;
-        token.lastname = userWithDetails.lastname;
         token.role = userWithDetails.role;
-        token.imageUrl = userWithDetails.imageUrl;
       }
       return token;
     },
@@ -86,11 +83,7 @@ export const authOptions: NextAuthOptions = {
         session.user = {
           // @ts-ignore
           id: token.sub,
-          email: token.email,
-          firstname: token.firstname,
-          lastname: token.lastname,
           role: token.role,
-          imageUrl: token.imageUrl,
         };
       }
       return session;

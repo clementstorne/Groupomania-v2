@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "Connectez-vous à IntraConnect, le réseau social interne d'entreprise, pour accéder à un espace de collaboration dynamique. Créez un compte en quelques étapes simples et rejoignez une communauté d'employés engagés. Rejoignez-nous dès aujourd'hui pour rester connecté et productif au sein de votre organisation.",
 };
 
-const page = () => {
+const Page = () => {
   return (
     <section className={cn("w-full p-4", "md:p-8")}>
       <div
@@ -37,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
