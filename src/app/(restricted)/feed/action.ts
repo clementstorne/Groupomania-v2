@@ -45,3 +45,21 @@ export const reactToPost = async (
 
   revalidatePath("/feed");
 };
+
+export const deletePost = async (postId: string) => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+
+  revalidatePath("/feed");
+};

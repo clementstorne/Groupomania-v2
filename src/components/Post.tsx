@@ -1,3 +1,4 @@
+import DialogDeletePost from "@/app/(restricted)/feed/DialogDeletePost";
 import { ReactionButton } from "@/components/ReactionButton";
 import ReactionIcon from "@/components/ReactionIcon";
 import UserAvatar from "@/components/UserAvatar";
@@ -16,28 +17,10 @@ import { getAuthorData, getPostReactions } from "@/lib/data";
 import { formatDateTime } from "@/lib/dateUtils";
 import { cn } from "@/lib/utils";
 import { DbPost, DbReaction, DbUser, ReactionCategories } from "@/types";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
-const AdminButton = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        "text-gray-11 !mt-0",
-        "hover:text-orange-10 hover:bg-gray-4"
-      )}
-    >
-      {children}
-    </Button>
-  );
-};
 
 type PostProps = DbPost;
 
@@ -120,12 +103,10 @@ const Post = async ({
         </div>
         {canUserEditAndDeletePost(user.id, author.id, user.role) && (
           <div className="flex flex-row items-center space-x-2">
-            <AdminButton>
+            <Button variant={"admin"}>
               <Pencil className={cn("h-6 w-6", "md:h-4 md:w-4")} />
-            </AdminButton>
-            <AdminButton>
-              <Trash2 className={cn("h-6 w-6", "md:h-4 md:w-4")} />
-            </AdminButton>
+            </Button>
+            <DialogDeletePost postId={id} />
           </div>
         )}
       </CardHeader>
