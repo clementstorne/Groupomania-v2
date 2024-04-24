@@ -1,8 +1,8 @@
 import DialogDeletePost from "@/app/(restricted)/feed/DialogDeletePost";
+import DialogEditPost from "@/app/(restricted)/feed/DialogEditPost";
 import { ReactionButton } from "@/components/ReactionButton";
 import ReactionIcon from "@/components/ReactionIcon";
 import UserAvatar from "@/components/UserAvatar";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,7 +17,6 @@ import { getAuthorData, getPostReactions } from "@/lib/data";
 import { formatDateTime } from "@/lib/dateUtils";
 import { cn } from "@/lib/utils";
 import { DbPost, DbReaction, DbUser, ReactionCategories } from "@/types";
-import { Pencil } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -103,9 +102,11 @@ const Post = async ({
         </div>
         {canUserEditAndDeletePost(user.id, author.id, user.role) && (
           <div className="flex flex-row items-center space-x-2">
-            <Button variant={"admin"}>
-              <Pencil className={cn("h-6 w-6", "md:h-4 md:w-4")} />
-            </Button>
+            <DialogEditPost
+              postId={id}
+              content={content}
+              media={media ? media : undefined}
+            />
             <DialogDeletePost postId={id} />
           </div>
         )}

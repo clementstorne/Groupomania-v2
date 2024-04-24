@@ -1,6 +1,5 @@
 "use client";
 
-import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,38 +10,51 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Pencil } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { changeAvatar } from "./action";
+import { editPost } from "./action";
 
-const formSchema = z.object({ avatar: z.instanceof(File) });
+const formSchema = z.object({
+  content: z.string().min(1, {
+    message:
+      "Le texte du post est requis. Veuillez saisir un texte pour créer votre post.",
+  }),
+  media: z.instanceof(File).optional(),
+});
 
-type DialogChangeAvatarProps = {
-  fullname: string;
-  imageUrl?: string;
-  userId: string;
+type DialogEditPostProps = {
+  postId: string;
+  content: string;
+  media?: string;
 };
 
-const DialogChangeAvatar = ({
-  fullname,
-  imageUrl,
-  userId,
-}: DialogChangeAvatarProps) => {
+const DialogEditPost = ({ postId, content, media }: DialogEditPostProps) => {
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [avatar, setAvatar] = useState(imageUrl);
+  const [image, setImage] = useState(media);
 
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      avatar: undefined,
+      content: content,
+      media: undefined,
     },
   });
 
@@ -50,20 +62,20 @@ const DialogChangeAvatar = ({
 
   const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const newAvatar = e.target.files[0];
+      const newImage = e.target.files[0];
 
       const reader = new FileReader();
 
       reader.onload = (event) => {
         if (event.target && event.target.result) {
           const imageUrl = event.target.result as string;
-          setAvatar(imageUrl);
+          setImage(imageUrl);
         }
       };
 
-      reader.readAsDataURL(newAvatar);
+      reader.readAsDataURL(newImage);
 
-      form.setValue("avatar", newAvatar);
+      form.setValue("media", newImage);
     }
   };
 
@@ -74,12 +86,15 @@ const DialogChangeAvatar = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
-    formData.append("image", values.avatar);
+    formData.append("content", values.content);
+    if (values.media) {
+      formData.append("media", values.media);
+    }
     try {
-      await changeAvatar(userId, formData);
+      await editPost(postId, formData);
       setOpen(false);
       toast({
-        description: "Votre avatar a été mis à jour",
+        description: "Votre post a été mis à jour",
       });
     } catch (error) {
       console.error(error);
@@ -89,26 +104,13 @@ const DialogChangeAvatar = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div
-          className={cn(
-            "w-60 h-60 rounded-full",
-            "hover:cursor-pointer hover:opacity-80"
-          )}
-        >
-          {imageUrl ? (
-            <UserAvatar
-              src={avatar}
-              name={fullname}
-              className="w-full h-full"
-            />
-          ) : (
-            <UserAvatar name={fullname} className="w-full h-full" />
-          )}
-        </div>
+        <Button variant={"admin"}>
+          <Pencil className={cn("h-6 w-6", "md:h-4 md:w-4")} />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Modifier l&apos;avatar</DialogTitle>
+          <DialogTitle>Modifier le post</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -121,30 +123,41 @@ const DialogChangeAvatar = ({
 
             <FormField
               control={form.control}
-              name="avatar"
+              name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel id="avatar-label" className="sr-only">
-                    Nouvel avatar
+                  <FormLabel>Contenu</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="media"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel id="media-label" className="sr-only">
+                    Media
                   </FormLabel>
-                  <div className={cn("w-60 h-60 rounded-full mx-auto mb-4")}>
-                    {imageUrl ? (
-                      <UserAvatar
-                        src={avatar}
-                        name={fullname}
-                        className="w-full h-full"
-                      />
-                    ) : (
-                      <UserAvatar name={fullname} className="w-full h-full" />
-                    )}
-                  </div>
+                  {image ? (
+                    <Image
+                      src={image}
+                      alt="Image d'illustration de votre post"
+                      width={600}
+                      height={600}
+                      className="max-h-[600px] w-auto mx-auto mb-4"
+                    />
+                  ) : null}
 
                   <input
                     type="file"
                     name="image"
-                    id="avatar"
+                    id="media"
                     className="hidden"
-                    aria-describedby="avatar-label"
+                    aria-describedby="media-label"
                     accept="image/png, image/jpg, image/jpeg, image/svg+xml, image/webp"
                     ref={hiddenFileInput}
                     onChange={handleImageInput}
@@ -156,13 +169,13 @@ const DialogChangeAvatar = ({
                     className="w-full font-bold"
                     onClick={handleUploadButtonClick}
                   >
-                    Sélectionner une image
+                    {media ? "Modifier l'image" : "Ajouter une image"}
                   </Button>
                 </FormItem>
               )}
             />
             <Button type="submit" size="lg" className="w-full">
-              Modifier mon avatar
+              Modifier mon post
             </Button>
           </form>
         </Form>
@@ -178,4 +191,4 @@ const DialogChangeAvatar = ({
   );
 };
 
-export default DialogChangeAvatar;
+export default DialogEditPost;

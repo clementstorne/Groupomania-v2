@@ -2,7 +2,10 @@
 
 import prisma from "@/lib/prisma";
 import { ReactionCategories } from "@/types";
+import { statfs, unlink, writeFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
+import { join } from "path";
+import { v4 as uuidv4 } from "uuid";
 
 const checkIfReactionAlreadyExists = async (userId: string, postId: string) => {
   const reactionAlreadyExists = await prisma.reaction.findFirst({
@@ -60,6 +63,82 @@ export const deletePost = async (postId: string) => {
       id: postId,
     },
   });
+
+  revalidatePath("/feed");
+};
+
+export const deleteOldMedia = async (mediaToDelete: string) => {
+  const filename = mediaToDelete.split("/images/")[1];
+  const filePath = join(process.cwd(), "public/images/", filename);
+  if (await statfs(filePath)) {
+    await unlink(filePath);
+  }
+};
+
+export const editPost = async (postId: string, formData: FormData) => {
+  const content = (await formData.get("content")) as string;
+  const file = (await formData.get("media")) as File;
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: {
+      id: true,
+      media: true,
+    },
+  });
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  if (file && file.size !== 0) {
+    const MIME_TYPES: Record<string, string> = {
+      "image/jpg": "jpg",
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/svg+xml": "svg",
+      "image/webp": "webp",
+    };
+
+    const extension = MIME_TYPES[file.type];
+
+    if (!extension) {
+      throw new Error("Unsupported file type");
+    }
+
+    const fileName = uuidv4() + "." + extension;
+
+    const path = join(process.cwd(), "public/images/" + fileName);
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    await writeFile(path, buffer);
+
+    if (post.media) {
+      await deleteOldMedia(post.media);
+    }
+
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        content: content,
+        media: "/images/" + fileName,
+        updatedAt: new Date(),
+      },
+    });
+  } else {
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        content: content,
+        updatedAt: new Date(),
+      },
+    });
+  }
 
   revalidatePath("/feed");
 };
