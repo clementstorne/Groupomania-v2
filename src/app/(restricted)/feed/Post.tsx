@@ -1,7 +1,3 @@
-import DialogDeletePost from "@/app/(restricted)/feed/DialogDeletePost";
-import DialogEditPost from "@/app/(restricted)/feed/DialogEditPost";
-import { ReactionButton } from "@/components/ReactionButton";
-import ReactionIcon from "@/components/ReactionIcon";
 import UserAvatar from "@/components/UserAvatar";
 import {
   Card,
@@ -20,6 +16,10 @@ import { DbPost, DbReaction, DbUser, ReactionCategories } from "@/types";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import DialogDeletePost from "./DialogDeletePost";
+import DialogEditPost from "./DialogEditPost";
+import ReactionButton from "./ReactionButton";
+import ReactionIcon from "./ReactionIcon";
 
 type PostProps = DbPost;
 

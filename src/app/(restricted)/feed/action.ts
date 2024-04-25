@@ -26,6 +26,40 @@ const deleteReaction = async (userId: string, postId: string) => {
   });
 };
 
+const deleteOldMedia = async (mediaToDelete: string) => {
+  const filename = mediaToDelete.split("/images/")[1];
+  const filePath = join(process.cwd(), "public/images/", filename);
+  if (await statfs(filePath)) {
+    await unlink(filePath);
+  }
+};
+
+const uploadMedia = async (file: File) => {
+  const MIME_TYPES: Record<string, string> = {
+    "image/jpg": "jpg",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/svg+xml": "svg",
+    "image/webp": "webp",
+  };
+
+  const extension = MIME_TYPES[file.type];
+
+  if (!extension) {
+    throw new Error("Unsupported file type");
+  }
+
+  const fileName = uuidv4() + "." + extension;
+
+  const path = join(process.cwd(), "public/images/" + fileName);
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  await writeFile(path, buffer);
+
+  return fileName;
+};
+
 export const reactToPost = async (
   userId: string,
   postId: string,
@@ -58,6 +92,10 @@ export const deletePost = async (postId: string) => {
     throw new Error("Post not found");
   }
 
+  if (post.media) {
+    await deleteOldMedia(post.media);
+  }
+
   await prisma.post.delete({
     where: {
       id: postId,
@@ -65,14 +103,6 @@ export const deletePost = async (postId: string) => {
   });
 
   revalidatePath("/feed");
-};
-
-export const deleteOldMedia = async (mediaToDelete: string) => {
-  const filename = mediaToDelete.split("/images/")[1];
-  const filePath = join(process.cwd(), "public/images/", filename);
-  if (await statfs(filePath)) {
-    await unlink(filePath);
-  }
 };
 
 export const editPost = async (postId: string, formData: FormData) => {
@@ -92,27 +122,7 @@ export const editPost = async (postId: string, formData: FormData) => {
   }
 
   if (file && file.size !== 0) {
-    const MIME_TYPES: Record<string, string> = {
-      "image/jpg": "jpg",
-      "image/jpeg": "jpg",
-      "image/png": "png",
-      "image/svg+xml": "svg",
-      "image/webp": "webp",
-    };
-
-    const extension = MIME_TYPES[file.type];
-
-    if (!extension) {
-      throw new Error("Unsupported file type");
-    }
-
-    const fileName = uuidv4() + "." + extension;
-
-    const path = join(process.cwd(), "public/images/" + fileName);
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(path, buffer);
+    const fileName = await uploadMedia(file);
 
     if (post.media) {
       await deleteOldMedia(post.media);
@@ -136,6 +146,32 @@ export const editPost = async (postId: string, formData: FormData) => {
       data: {
         content: content,
         updatedAt: new Date(),
+      },
+    });
+  }
+
+  revalidatePath("/feed");
+};
+
+export const createPost = async (userId: string, formData: FormData) => {
+  const content = (await formData.get("content")) as string;
+  const file = (await formData.get("media")) as File;
+
+  if (file && file.size !== 0) {
+    const fileName = await uploadMedia(file);
+
+    await prisma.post.create({
+      data: {
+        authorId: userId,
+        content: content,
+        media: "/images/" + fileName,
+      },
+    });
+  } else {
+    await prisma.post.create({
+      data: {
+        authorId: userId,
+        content: content,
       },
     });
   }

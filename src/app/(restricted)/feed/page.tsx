@@ -1,6 +1,7 @@
-import Post from "@/components/Post";
 import { getPosts } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import NewPostCard from "./NewPostCard";
+import Post from "./Post";
 
 const Page = async () => {
   const posts = await getPosts();
@@ -12,6 +13,7 @@ const Page = async () => {
         "md:mx-8 md:space-y-4"
       )}
     >
+      <NewPostCard />
       {posts.map((post) => (
         <Post key={post.id} {...post} />
       ))}

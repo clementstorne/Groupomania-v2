@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     "Le réseau social interne d'entreprise favorisant les échanges informels entre les employés. Partagez des posts avec texte et images, recevez des likes, dislikes et commentaires pour renforcer la cohésion et la collaboration au sein de votre organisation.",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="fr">
       <body className={cn(lato.className, "bg-gray-2 text-gray-12")}>
@@ -28,4 +28,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

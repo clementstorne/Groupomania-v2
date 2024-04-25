@@ -14,6 +14,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 import { deletePost } from "./action";
 
 type DialogDeletePostProps = {
@@ -21,17 +22,20 @@ type DialogDeletePostProps = {
 };
 
 const DialogDeletePost = ({ postId }: DialogDeletePostProps) => {
+  const [open, setOpen] = useState(false);
+
   const { toast } = useToast();
 
   const handleOnClick = async () => {
     await deletePost(postId);
+    setOpen(false);
     toast({
       variant: "destructive",
       description: "Votre post a été supprimé",
     });
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"admin"}>
           <Trash2 className={cn("h-6 w-6", "md:h-4 md:w-4")} />
