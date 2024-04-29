@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
+import logo from "@public/intraconnect-logo.svg";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../@public/intraconnect-logo.svg";
 
 const Header = () => {
   return (

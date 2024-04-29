@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
+import image from "@public/post-it-intraconnect.webp";
 import { Metadata } from "next";
 import Image from "next/image";
-import image from "../../@public/post-it-intraconnect.webp";
 import LoginForm from "./form";
 
 export const metadata: Metadata = {
