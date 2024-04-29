@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 
 export const formatDateTime = (dateTime: Date) => {
   const day = dateTime.getDate();
-  const month = dateTime.getMonth();
+  const month = dateTime.getMonth() + 1;
   const year = dateTime.getFullYear();
   const hour = dateTime.getHours();
   const minute = dateTime.getMinutes();

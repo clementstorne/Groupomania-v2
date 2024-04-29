@@ -1,13 +1,13 @@
 "use client";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import logo from "@/public/intraconnect-logo.svg";
 import { Home, LogOut, Menu, User, X } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import logo from "../../public/intraconnect-logo.svg";
 
 type BurgerButtonProps = {
   className?: string;

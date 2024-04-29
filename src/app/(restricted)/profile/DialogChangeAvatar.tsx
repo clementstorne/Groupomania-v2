@@ -95,7 +95,7 @@ const DialogChangeAvatar = ({
             "hover:cursor-pointer hover:opacity-80"
           )}
         >
-          {imageUrl ? (
+          {avatar ? (
             <UserAvatar
               src={avatar}
               name={fullname}
@@ -128,7 +128,7 @@ const DialogChangeAvatar = ({
                     Nouvel avatar
                   </FormLabel>
                   <div className={cn("w-60 h-60 rounded-full mx-auto mb-4")}>
-                    {imageUrl ? (
+                    {avatar ? (
                       <UserAvatar
                         src={avatar}
                         name={fullname}

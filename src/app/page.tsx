@@ -1,12 +1,12 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import logo from "@public/intraconnect-logo.svg";
+import image from "@public/trois-collegues-discutent-intraconnect.webp";
 import { Paperclip, Speech, ThumbsUp } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../../public/intraconnect-logo.svg";
-import image from "../../public/trois-collegues-discutent-intraconnect.webp";
 
 export const metadata: Metadata = {
   title: "intraconnect - Le réseau social interne d'entreprise",
